@@ -6,6 +6,23 @@ const Product = require('./models/product');
 const app = express();
 const PORT = process.env.PORT || 4444;
 
+const FRONTEND = process.env.FRONTEND;
+var cors = require('cors');
+var corsOptions = {
+    origin: FRONTEND,
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions));
+app.use((req, res, next) => {
+    const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+    const origin = req.headers.origin;
+
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    next();
+});
+
 // Database Connection
 mongoose.connect(process.env.DB_CONNECTION);
 const dbConn = mongoose.connection;
